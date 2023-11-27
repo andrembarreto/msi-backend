@@ -14,7 +14,7 @@ class MovementAnalyser():
         
     @staticmethod
     def create_total_pointwise_acceleration_column(df: pd.DataFrame):
-        x, y, z = df['x'], df['y'], df['z']
+        x, y, z = df['acceleration_x'], df['acceleration_y'], df['acceleration_z']
         result = np.hypot(x, y, z)
         df['total_acceleration'] = result
 
