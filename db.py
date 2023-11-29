@@ -18,28 +18,34 @@ class MobilityDataBaseController:
 
         journey_id = self.fetch_journey_id()
 
-        for journey_point in mobility_data:
+        for journey_point in mobility_data[1:]:
             journey_point['timestamp'] = datetime.strptime(journey_point['timestamp'], "%a %b %d %H:%M:%S %Y %Z")
             journey_point['journey_id'] = journey_id
 
-            self.cursor.execute('''INSERT INTO mobilidade_schema.jornada(
+            self.cursor.execute('''INSERT INTO mobility.ponto_jornada(
                                         aceleracao_x, aceleracao_y, aceleracao_z,
                                         rotacao_x, rotacao_y, rotacao_z, orientacao,
                                         id_jornada, timestamp, latitude, longitude)
                                     VALUES
                                         (%(acceleration_x)s,%(acceleration_y)s,%(acceleration_z)s,
                                         %(rotation_x)s,%(rotation_y)s,%(rotation_z)s,
-                                        %(device_orientation)s,%(journey_id)s,%(timestamp)s,
+                                        \'%(device_orientation)s\',%(journey_id)s,%(timestamp)s,
                                         %(latitude)s,%(longitude)s)''', journey_point)
         self.connection.commit()
         self.connection.close()
 
     def register_journey_bus_line(self, line_id: str):
-        self.cursor.execute(f'INSERT INTO mobilidade_schema.jornada_linha(id_linha) VALUES({line_id})')
+        self.cursor.execute('SELECT * FROM mobility.linha_onibus l WHERE l.id_linha = %(line_id)s', {"line_id": line_id}) # checking if line is already registered
+        
+        if len(self.cursor.fetchall()) == 0:
+            self.cursor.execute('INSERT INTO mobility.linha_onibus(id_linha) VALUES(%(line_id)s)', {"line_id": line_id})
+
+        self.cursor.execute('INSERT INTO mobility.jornada(id_linha) VALUES(%(line_id)s)', {"line_id": line_id})
+        
         self.connection.commit()
 
     def fetch_journey_id(self):
-        self.cursor.execute('SELECT max(id_jornada) FROM mobilidade_schema.jornada_linha')
+        self.cursor.execute('SELECT max(id_jornada) FROM mobility.jornada')
         result = self.cursor.fetchall()
         self.connection.commit()
 
