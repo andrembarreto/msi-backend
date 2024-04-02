@@ -2,21 +2,22 @@ import psycopg2
 from datetime import datetime
 import json
 
+
 class MobilityDataBaseController:
     def __init__(self):
-        db_info = self.get_db_info()
+        db_info = self.load_db_info()
         self.connection = psycopg2.connect(database=db_info['database'],
-                                            user=db_info['user'],
-                                            host=db_info['host'],
-                                            password=db_info['password'],
-                                            port=db_info['port'])
-        
+                                           user=db_info['user'],
+                                           host=db_info['host'],
+                                           password=db_info['password'],
+                                           port=db_info['port'])
+
         self.cursor = self.connection.cursor()
-    
-    def store_journey_entries(self, mobility_data: list[dict]) -> bool:
+
+    def register_journey_entries(self, mobility_data: list[dict]) -> None:
         self.register_journey_bus_line(mobility_data[0]['bus_line'])
 
-        journey_id = self.fetch_journey_id()
+        journey_id = self.load_journey_id()
 
         for journey_point in mobility_data[1:]:
             journey_point['timestamp'] = datetime.strptime(journey_point['timestamp'], "%a %b %d %H:%M:%S %Y %Z")
@@ -35,27 +36,29 @@ class MobilityDataBaseController:
         self.connection.close()
 
     def register_journey_bus_line(self, line_id: str):
-        self.cursor.execute('SELECT * FROM mobility.linha_onibus l WHERE l.id_linha = %(line_id)s', {"line_id": line_id}) # checking if line is already registered
-        
+        self.cursor.execute('SELECT * FROM mobility.linha_onibus l WHERE l.id_linha = %(line_id)s',
+                            {"line_id": line_id})  # checking if line is already registered
+
         if len(self.cursor.fetchall()) == 0:
             self.cursor.execute('INSERT INTO mobility.linha_onibus(id_linha) VALUES(%(line_id)s)', {"line_id": line_id})
 
         self.cursor.execute('INSERT INTO mobility.jornada(id_linha) VALUES(%(line_id)s)', {"line_id": line_id})
-        
+
         self.connection.commit()
 
-    def fetch_journey_id(self):
+    def load_journey_id(self):
         self.cursor.execute('SELECT max(id_jornada) FROM mobility.jornada')
         result = self.cursor.fetchall()
         self.connection.commit()
 
         if result is None:
             raise Exception("Journey Id not Found")
-        
+
         return result[0][0]
-    
-    def get_db_info(self) -> dict:
-        with open('db_info.json', "r") as db_info_file:
-            db_info = json.loads(db_info_file.read())
-        db_info_file.close()
+
+    @staticmethod
+    def load_db_info() -> dict:
+        with open('db_info.json', 'r') as db_info_file:
+            db_info = json.load(db_info_file)
+
         return db_info
