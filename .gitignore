@@ -1,5 +1,6 @@
 __pycache__/
-db_info.json
+.db_info.json
 .idea/
-venv/
 .vscode/
+.env/
+venv/
