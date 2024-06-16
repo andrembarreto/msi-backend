@@ -10,10 +10,9 @@ class MobilityDBController:
         self.__db_connection.connect()
 
     def register_journey_data(self, journey_data: list[dict[str, Any]]):
-        journey_id: int = self.__retrieve_journey_id()
         bus_line: str = journey_data[0]['bus_line']
         self.__register_bus_line(bus_line)
-        self.__register_journey(journey_id, bus_line)
+        journey_id = self.__register_journey(bus_line)
 
         for point in journey_data:
             entry = { field: value for field, value in point.items() }
@@ -26,10 +25,7 @@ class MobilityDBController:
 
             query = f"INSERT INTO mobility.ponto_jornada ({columns}) VALUES ({placeholders})"
             self.__db_connection.execute_query(query, params)
-
-    def __retrieve_journey_id(self) -> int:
-        """ Retrieves a new journey ID from the database and returns it """
-        ...
+            self.__db_connection.commit()
 
     def __register_bus_line(self, bus_line: str) -> None:
         """ Creates a new entry in the bus line table using `bus_line`,
@@ -42,8 +38,10 @@ class MobilityDBController:
             insert_query = "INSERT INTO mobility.linha_onibus (id) VALUES (%s)"
             self.__db_connection.execute_query(insert_query, params=(bus_line,))
 
-    def __register_journey(self, journey_id: int, bus_line: str) -> None:
-        """ Creates a new entry in the journey table using `journey_id`
-        and linking it to a bus line identified by the `bus_line` value
+    def __register_journey(self, bus_line: str) -> int:
+        """ Creates a new entry in the journey table, linking it to a bus line
+        identified by the `bus_line` value. Returns the newly added journey's id
         """
-        ...
+        insert_query = "INSERT INTO mobility.jornada (bus_line) VALUES (%s) RETURNING id"
+        result = self.__db_connection.fetch_one(insert_query, params=(bus_line,))
+        return list(result.values())[0]
