@@ -35,7 +35,12 @@ class MobilityDBController:
         """ Creates a new entry in the bus line table using `bus_line`,
         if one does not already exist.
         """
-        ...
+        bus_line_query = "SELECT id from mobility.linha_onibus WHERE id = %s"
+        result = self.__db_connection.fetch_one(bus_line_query, params=(bus_line,))
+
+        if not result:
+            insert_query = "INSERT INTO mobility.linha_onibus (id) VALUES (%s)"
+            self.__db_connection.execute_query(insert_query, params=(bus_line,))
 
     def __register_journey(self, journey_id: int, bus_line: str) -> None:
         """ Creates a new entry in the journey table using `journey_id`
