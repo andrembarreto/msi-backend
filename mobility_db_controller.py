@@ -20,7 +20,12 @@ class MobilityDBController:
             entry['timestamp'] = datetime.strptime(entry['timestamp'], "%a %b %d %H:%M:%S %Y %Z")
             entry['journey_id'] = journey_id
 
-            # TODO: add entry to the database
+            columns = ', '.join(entry.keys())
+            params = tuple(entry.values())
+            placeholders = ', '.join(['%s'] * len(entry))
+
+            query = f"INSERT INTO mobility.ponto_jornada ({columns}) VALUES ({placeholders})"
+            self.__db_connection.execute_query(query, params)
 
     def __retrieve_journey_id(self) -> int:
         """ Retrieves a new journey ID from the database and returns it """
