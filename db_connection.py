@@ -8,6 +8,10 @@ class DBConnection(ABC):
         pass
 
     @abstractmethod
+    def disconnect(self) -> None:
+        pass
+
+    @abstractmethod
     def create(self, table: str, data: dict[str, Any]) -> None:
         pass
 
