@@ -4,6 +4,7 @@ from typing import Any
 
 class JourneyService(ABC):
     @abstractmethod
-    def register_journey(self, journey_data: list[dict[str, Any]]) -> None:
-        """ Registers `journey_data` into the mobility database """
+    def register_journey(self, bus_line: str, journey_points: list[dict[str, Any]]) -> None:
+        """ Registers a new journey, composed by `journey_points` and set in `bus_line`,
+        into the database """
         pass
