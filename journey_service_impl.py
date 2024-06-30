@@ -16,13 +16,8 @@ class JourneyServiceImpl(JourneyService):
         self.__bus_line_repository = bus_line_repository
 
     def register_journey(self, bus_line: str, journey_points: list[dict[str, Any]]) -> None:
-        if not self.__bus_line_repository.get_by_id(bus_line):
-            self.__bus_line_repository.create(bus_line)
-
+        self.__bus_line_repository.create_if_not_exists(bus_line)
         self.__journey_repository.create(bus_line)
 
         for point in journey_points:
             self.__journey_points_repository.create(**point)
-
-
-
