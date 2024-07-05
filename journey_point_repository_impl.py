@@ -15,8 +15,7 @@ class JourneyPointRepositoryImpl(JourneyPointRepository):
             {
                 'journey': journey_id,
                 'timestamp': point.timestamp,
-                'latitude': point.latitude,
-                'longitude': point.longitude,
+                'geometry': (f'POINT ({point.latitude} {point.longitude})', 4326),
                 'acceleration_x': point.acceleration_x,
                 'acceleration_y': point.acceleration_y,
                 'acceleration_z': point.acceleration_z,

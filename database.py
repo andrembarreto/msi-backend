@@ -1,6 +1,6 @@
-from peewee import SqliteDatabase
+from peewee import PostgresqlDatabase
 
-db = SqliteDatabase('mobility.db')
+db = PostgresqlDatabase('example_database', user='postgres')
 
 def initialize_database():
     db.connect()
