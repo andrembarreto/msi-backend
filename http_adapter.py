@@ -27,16 +27,16 @@ class HTTPAdapter:
         try:
             bus_line = mobility_data['bus_line']
         except KeyError:
-            return jsonify({'status': HTTPStatusCode.MISSING_BUS_LINE})
+            return jsonify({'status': HTTPStatusCode.MISSING_BUS_LINE.value})
         try:
             points_data = mobility_data['points']
         except KeyError:
-            return jsonify({'status': HTTPStatusCode.MISSING_POINTS})
+            return jsonify({'status': HTTPStatusCode.MISSING_POINTS.value})
 
         try:
             points = [self.point_from_json(point) for point in points_data]
         except KeyError:
-            return jsonify({'status': HTTPStatusCode.BAD_FORMAT})
+            return jsonify({'status': HTTPStatusCode.BAD_FORMAT.value})
 
         self.__journey_service.register_journey(bus_line, points)
-        return jsonify({'status': HTTPStatusCode.SUCCESS})
+        return jsonify({'status': HTTPStatusCode.SUCCESS.value})

@@ -23,7 +23,7 @@ def create_app() -> Flask:
         try:
             data = request.json
         except UnsupportedMediaType:
-            return jsonify({'status': HTTPStatusCode.BAD_FORMAT})
+            return jsonify({'status': HTTPStatusCode.BAD_FORMAT.value})
 
         return http_adapter.receive_mobility_data(data)
 
