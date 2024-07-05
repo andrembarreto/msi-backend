@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, astuple
 from datetime import datetime
 
 
@@ -13,3 +13,12 @@ class Point:
     rotation_z: float
     latitude: float
     longitude: float
+
+    def __getitem__(self, key):
+        if isinstance(key, str):
+            return getattr(self, key)
+        else:
+            raise KeyError(f"Invalid key: {key}")
+
+    def __iter__(self):
+        return iter(astuple(self))
