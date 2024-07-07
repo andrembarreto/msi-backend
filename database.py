@@ -1,6 +1,10 @@
 from peewee import PostgresqlDatabase
+import json
 
-db = PostgresqlDatabase('example_database', user='postgres')
+with open('.db_info.json', 'r') as db_info_file:
+    db_info = json.load(db_info_file)
+
+db = PostgresqlDatabase('urban_mobility', **db_info)
 
 def initialize_database():
     db.connect()
