@@ -5,7 +5,7 @@ from point import Point
 
 class JourneyPointRepository(ABC):
     @abstractmethod
-    def get_points_by_journey_id(self, journey_id: int):
+    def get_points_by_journey_id(self, journey_id: int) -> list[Point]:
         pass
 
     @abstractmethod

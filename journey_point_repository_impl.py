@@ -4,11 +4,25 @@ from point import Point
 
 
 class JourneyPointRepositoryImpl(JourneyPointRepository):
-    def get_points_by_journey_id(self, journey_id: int):
+    def get_points_by_journey_id(self, journey_id: int) -> list[Point]:
         query = JourneyPoint.select()\
                             .join(Journey)\
                             .where(JourneyPoint.journey == journey_id)
-        return query
+        points = [
+            Point(
+                timestamp=point.timestamp,
+                acceleration_x=point.acceleration_x,
+                acceleration_y=point.acceleration_y,
+                acceleration_z=point.acceleration_z,
+                rotation_x=point.rotation_x,
+                rotation_y=point.rotation_y,
+                rotation_z=point.rotation_z,
+                latitude=point.geometry.x,
+                longitude=point.geometry.y
+            )
+            for point in query
+        ]
+        return points
 
     def batch_create(self, journey_id: int, points: list[Point]):
         data = [
