@@ -1,5 +1,8 @@
-psycopg[binary]
+psycopg2
 numpy
 pandas
-flask
+flask[async]
 pytest
+peewee
+shapely
+requests
