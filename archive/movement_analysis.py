@@ -21,7 +21,7 @@ class MovementStability(Enum):
 class MovementAnalyser:
     def __init__(self, points: pd.DataFrame):
         self.points = points
-        
+
     @staticmethod
     def create_total_acceleration_column(df: pd.DataFrame) -> None:
         x, y, z = df['acceleration_x'], df['acceleration_y'], df['acceleration_z']
