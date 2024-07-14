@@ -39,3 +39,7 @@ class JourneyPoint(BaseModel):
     rotation_x = FloatField()
     rotation_y = FloatField()
     rotation_z = FloatField()
+    transformed_x_acceleration = FloatField()
+    transformed_y_acceleration = FloatField()
+    transformed_z_acceleration = FloatField()
+    resultant_acceleration = FloatField()

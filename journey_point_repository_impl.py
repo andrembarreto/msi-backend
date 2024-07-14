@@ -1,6 +1,8 @@
+from typing import Any
 from models import JourneyPoint, Journey, db
 from journey_point_repository import JourneyPointRepository
 from point import Point
+from point_additional_data import PointAdditionalData
 
 
 class JourneyPointRepositoryImpl(JourneyPointRepository):
@@ -24,7 +26,7 @@ class JourneyPointRepositoryImpl(JourneyPointRepository):
         ]
         return points
 
-    def batch_create(self, journey_id: int, points: list[Point]):
+    def batch_create(self, journey_id: int, points: list[Point], points_additional_data: list[PointAdditionalData]):
         data = [
             {
                 'journey': journey_id,
@@ -35,9 +37,13 @@ class JourneyPointRepositoryImpl(JourneyPointRepository):
                 'acceleration_z': point.acceleration_z,
                 'rotation_x': point.rotation_x,
                 'rotation_y': point.rotation_y,
-                'rotation_z': point.rotation_z
+                'rotation_z': point.rotation_z,
+                'transformed_x_acceleration': additional_data.transformed_x_acceleration,
+                'transformed_y_acceleration': additional_data.transformed_y_acceleration,
+                'transformed_z_acceleration': additional_data.transformed_z_acceleration,
+                'resultant_acceleration': additional_data.resultant_acceleration
             }
-            for point in points
+            for point, additional_data in zip(points, points_additional_data)
         ]
 
         with db.atomic():
