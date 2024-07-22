@@ -4,6 +4,8 @@ from journey_point_repository import JourneyPointRepository
 from point import Point
 from point_additional_data import PointAdditionalData
 
+EPSG_WGS84 = 4326
+
 
 class JourneyPointRepositoryImpl(JourneyPointRepository):
     def get_points_by_journey_id(self, journey_id: int) -> list[Point]:
@@ -31,7 +33,7 @@ class JourneyPointRepositoryImpl(JourneyPointRepository):
             {
                 'journey': journey_id,
                 'timestamp': point.timestamp,
-                'geometry': (f'POINT ({point.longitude} {point.latitude})', 4326),
+                'geometry': (f'POINT ({point.longitude} {point.latitude})', EPSG_WGS84),
                 'acceleration_x': point.acceleration_x,
                 'acceleration_y': point.acceleration_y,
                 'acceleration_z': point.acceleration_z,
