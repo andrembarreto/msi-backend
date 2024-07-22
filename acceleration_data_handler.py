@@ -17,11 +17,8 @@ class AccelerationDataHandler:
         roll, pitch, yaw = rotation_values
         R_x, R_y, R_z = AccelerationDataHandler.get_rotation_matrices(roll, pitch, yaw)
 
-        # Combined rotation matrix R
-        R = R_z @ R_y @ R_x
-
-        # Transform the acceleration vector the rotation matrix
-        transformed_acceleration = R @ acceleration_values
+        combined_rotation_matrix = R_z @ R_y @ R_x
+        transformed_acceleration = combined_rotation_matrix @ acceleration_values
 
         return transformed_acceleration
 
